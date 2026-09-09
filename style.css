@@ -1221,6 +1221,19 @@ button {
     margin-top: 10px;
 }
 
+.opening-hours {
+    margin-top: 14px;
+    color: var(--cream);
+    font: 600 12px/1.45 var(--oswald);
+    letter-spacing: .7px;
+}
+
+.opening-hours strong {
+    color: #ffc56d;
+    font-size: 10px;
+    letter-spacing: 1.2px;
+}
+
 .builder-flow {
     width: min(1100px, 100%);
     margin: 28px auto 0;
@@ -2082,11 +2095,14 @@ button {
     }
 
     .builder-flow {
-        gap: 5px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px 10px;
+        align-items: start;
     }
 
     .builder-step {
-        width: 85px;
+        width: auto;
     }
 
     .builder-icon {
@@ -2104,6 +2120,8 @@ button {
 
     .builder-final {
         width: 105px;
+        grid-column: 1 / -1;
+        margin: auto;
     }
 
     .reviews-grid {
@@ -2176,11 +2194,6 @@ button {
         width: 60%;
     }
 
-    .builder-flow {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-    }
-
     .plus,
     .arrow-big {
         display: none;
@@ -2213,6 +2226,15 @@ button {
     .hero-real-badge span { font-size: 7px; }
     .hero-real-badge small { font-size: 5px; }
     .story-splash-art { width: 120%; right: -18%; top: 12%; }
+    .builder-game-ingredients {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+    .builder-game-ingredients button {
+        width: 100%;
+        min-width: 0;
+    }
 }
 
 .story-splash-art { position: absolute; z-index: 1; width: min(760px, 58vw); right: 5%; top: 0; opacity: .95; pointer-events: none; }
