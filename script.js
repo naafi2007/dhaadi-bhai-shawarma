@@ -10,6 +10,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const menuButton = document.getElementById("menuButton");
     const mobileMenu = document.getElementById("mobileMenu");
     const storyModal = document.querySelector(".story-modal");
+    const storyPages = document.querySelectorAll("[data-story-page]");
+    const storyPageCount = document.querySelector("[data-story-page-count]");
+    let activeStoryPage = 0;
+
+    document.querySelectorAll(".menu-card img, .full-menu-item img, .story-modal img").forEach(image => {
+        image.loading = "lazy";
+        image.decoding = "async";
+    });
+
+    const showStoryPage = index => {
+        if (!storyPages.length) return;
+        activeStoryPage = (index + storyPages.length) % storyPages.length;
+        storyPages.forEach((page, pageIndex) => page.classList.toggle("is-active", pageIndex === activeStoryPage));
+        if (storyPageCount) storyPageCount.textContent = String(activeStoryPage + 1).padStart(2, "0");
+    };
 
     const closeStory = () => {
         if (!storyModal) return;
@@ -22,8 +37,11 @@ document.addEventListener("DOMContentLoaded", () => {
         storyModal.classList.add("is-open");
         storyModal.setAttribute("aria-hidden", "false");
         document.body.classList.add("story-modal-open");
+        showStoryPage(0);
     }));
     document.querySelectorAll("[data-story-close]").forEach(button => button.addEventListener("click", closeStory));
+    document.querySelector("[data-story-prev]")?.addEventListener("click", () => showStoryPage(activeStoryPage - 1));
+    document.querySelector("[data-story-next]")?.addEventListener("click", () => showStoryPage(activeStoryPage + 1));
 
     const openMenuModal = () => {
         if (!menuModal) return;
@@ -211,19 +229,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (effect === 0) {
             timeline.to(from, { scale: .9, rotation: 2, skewX: 2, opacity: .25, duration: .65, ease: "power2.in" })
-                .to(".transition-paper", { opacity: .88, scale: .82, rotation: -4, duration: .55, ease: "power3.in" }, 0)
-                .to(".transition-paper", { scale: 1.18, duration: .7, ease: "power2.out" }, .65);
+                .to(from, { scale: .98, duration: .7, ease: "power2.out" }, 0);
         } else if (effect === 1) {
-            timeline.to(".transition-paper", { opacity: .96, clipPath: "polygon(0 0, 100% 0, 100% 22%, 88% 18%, 77% 28%, 63% 17%, 49% 27%, 36% 16%, 22% 28%, 9% 17%, 0 24%)", duration: .7, ease: "power2.inOut" })
-                .to(from, { y: -12, rotation: -.6, duration: .55, ease: "power2.in" }, 0);
+            timeline.to(from, { y: -12, rotation: -.6, opacity: .2, duration: .7, ease: "power2.in" });
         } else if (effect === 2) {
-            timeline.to(from, { filter: "blur(7px)", scale: 1.035, opacity: .55, duration: .8, ease: "power2.inOut" });
+            timeline.to(from, { filter: "blur(7px)", scale: 1.035, opacity: .55, duration: .8, ease: "power2.inOut" })
+                .to(to, { filter: "blur(0px)", scale: 1, opacity: 1, duration: .65, ease: "power2.out" }, .45);
         } else if (effect === 3) {
             timeline.to(".transition-ink", { opacity: .94, xPercent: 110, duration: .9, ease: "power3.inOut" })
                 .to(from, { opacity: .2, duration: .35 }, 0);
         } else if (effect === 4) {
-            timeline.to(from, { rotationY: 12, xPercent: -5, scale: .91, opacity: .2, duration: .75, ease: "power3.in" })
-                .to(".transition-paper", { opacity: .9, rotation: -2, duration: .45 }, 0);
+            timeline.to(from, { rotationY: 12, xPercent: -5, scale: .91, opacity: .2, duration: .75, ease: "power3.in" });
         } else {
             timeline.to(".transition-smoke", { opacity: .78, x: -18, scale: 1.08, duration: .85, ease: "sine.inOut" })
                 .to(".transition-fire", { opacity: .34, scale: 1.1, duration: .8 }, 0)
@@ -237,9 +253,8 @@ document.addEventListener("DOMContentLoaded", () => {
             onUpdate: () => window.scrollTo(0, scrollState.y)
         }, effect === 3 ? .35 : .55);
 
-        if (effect === 2) timeline.to(to, { filter: "blur(0px)", scale: 1, opacity: 1, duration: .65 }, "-=.35");
         if (effect === 5) timeline.to(".transition-smoke, .transition-fire, .transition-sparks", { opacity: 0, duration: .65 }, "-=.3");
-        timeline.to([from, ".transition-paper", ".transition-ink"], { clearProps: "all", opacity: 0, duration: .45 }, "-=.18");
+        timeline.to([from, ".transition-ink"], { clearProps: "all", opacity: 0, duration: .45 }, "-=.18");
     }
 
     if (!reduceMotion && window.innerWidth > 700) {
@@ -289,7 +304,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .to(loader, {
             opacity: 0,
             duration: 0.3,
-            delay: 2.05,
+            delay: 0.75,
             ease: "power2.inOut",
             onComplete: () => {
                 loader.style.display = "none";
@@ -623,7 +638,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    gsap.utils.toArray(".garnish-onion, .garnish-tomato").forEach((item, index) => {
+    gsap.utils.toArray(".garnish-tomato").forEach((item, index) => {
         gsap.to(item, {
             y: -8,
             x: index % 2 ? 6 : -5,
